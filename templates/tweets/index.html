@@ -67,7 +67,7 @@
                         text: this.text
                     })
                     .then(response => {
-                        this.tweets_list.push(response.data)
+                        this.tweets_list.unshift(response.data)
                         this.name = ''
                         this.text = ''
                     })
