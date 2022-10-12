@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Tweets</h1>
+                    <form @submit.prevent="addTweet" class="row mt-4">
+                        <div class="form-group col-6">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" required id="name" v-model="name">
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="text">Text</label>
+                            <input type="text" class="form-control" required id="text" v-model="text">
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100 mt-2">Submit</button>
+                        </div>
+                    </form>
+                    <table class="table mt-4">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Text</th>
+                                <th scope="col">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% verbatim %}
+                            <tr v-for="tweet of tweets_list" >
+                                <td>{{ tweet.name }}</td>
+                                <td>{{ tweet.text }}</td>
+                                <td>{{ tweet.created_date }}</td>
+                            </tr>
+                        {% endverbatim %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    name: '',
+                    text: '',
+                    tweets_list: []
+                }
+            },
+            methods: {
+                addTweet() {
+                    axios.post('/api/', {
+                        name: this.name,
+                        text: this.text
+                    })
+                    .then(response => {
+                        this.tweets_list.push(response.data)
+                        this.name = ''
+                        this.text = ''
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                }
+            },
+            mounted() {
+                axios.get('/api/')
+                .then(response => {
+                    this.tweets_list = response.data
+                    console.log(this.tweets_list)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            }
+        })
+        app.mount('#app')
+    </script>
+</body>
+</html>
