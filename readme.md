@@ -18,7 +18,7 @@
 
     a. Just to make sure all the tables are created
 
-4. Run `python3 manage.py runserver`
+4. Run `python manage.py runserver`
 
    a. This will run the app on http://127.0.0.1:8000/
 
